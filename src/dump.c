@@ -3123,8 +3123,8 @@ static jl_method_t *jl_lookup_method_worldset(jl_methtable_t *mt, jl_datatype_t 
     size_t world = jl_world_counter;
     jl_typemap_entry_t *entry;
     while (1) {
-        entry = jl_typemap_assoc_by_type(
-            mt->defs, (jl_value_t*)sig, NULL, /*subtype*/0, /*offs*/0, world, /*max_world_mask*/(~(size_t)0) >> 1);
+        struct jl_typemap_assoc search = {(jl_value_t*)sig, world, /*max_world_mask*/(~(size_t)0) >> 1, NULL, 0, ~(size_t)0};
+        entry = jl_typemap_assoc_by_type(mt->defs, &search, /*offs*/0, /*subtype*/0);
         assert(entry);
         jl_method_t *_new = (jl_method_t*)entry->func.value;
         world = lowerbound_dependent_world_set(_new->primary_world, dependent_worlds);
